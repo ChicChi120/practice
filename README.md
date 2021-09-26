@@ -1,5 +1,9 @@
 # 微分方程式の数値解法
 
+![test](img/lorenz_att.pdf)
+
+
+
 ## オイラー法
 
 
