@@ -56,36 +56,34 @@ double b = 0.0;
 
 double runge_kutta(){
 
-    // FILE *fp;
-
     double N = 200000.0;
     double T = 2000.0;
     double h = T/N;
 
-    vector<double> k1(N + 1);
-    vector<double> k2(N + 1);
-    vector<double> k3(N + 1);
-    vector<double> k4(N + 1);
+    vector<double> k1(N);
+    vector<double> k2(N);
+    vector<double> k3(N);
+    vector<double> k4(N);
 
-    vector<double> l1(N + 1);
-    vector<double> l2(N + 1);
-    vector<double> l3(N + 1);
-    vector<double> l4(N + 1);
+    vector<double> l1(N);
+    vector<double> l2(N);
+    vector<double> l3(N);
+    vector<double> l4(N);
 
-    vector<double> m1(N + 1);
-    vector<double> m2(N + 1);
-    vector<double> m3(N + 1);
-    vector<double> m4(N + 1);
+    vector<double> m1(N);
+    vector<double> m2(N);
+    vector<double> m3(N);
+    vector<double> m4(N);
     
-    vector<double> x(N + 1);
-    vector<double> y(N + 1);
-    vector<double> z(N + 1);
+    vector<double> x(N);
+    vector<double> y(N);
+    vector<double> z(N);
 
-    vector<double> dq1(N + 1);
-    vector<double> dq2(N + 1);
-    vector<double> dq3(N + 1);
+    vector<double> dq1(N);
+    vector<double> dq2(N);
+    vector<double> dq3(N);
 
-    vector<double> logd(N + 1);
+    vector<double> logd(N);
 
     double t = 0.0;
     double x0 = 10.0;
@@ -95,21 +93,6 @@ double runge_kutta(){
     double delta_norm = 0.0;
 
     // 初期値
-    k1[0] = 0.0;
-    k2[0] = 0.0;
-    k3[0] = 0.0;
-    k4[0] = 0.0;
-
-    l1[0] = 0.0;
-    l2[0] = 0.0;
-    l3[0] = 0.0;
-    l4[0] = 0.0;
-
-    m1[0] = 0.0;
-    m2[0] = 0.0;
-    m3[0] = 0.0;
-    m4[0] = 0.0;
-
     x[0] = x0;
     y[0] = y0;
     z[0] = z0;
@@ -120,9 +103,6 @@ double runge_kutta(){
     dq3[0] = jd3(1.0, 0.0, 0.0, x[0], y[0]) / sqrt(pow(jd1(1.0, 0.0), 2) + pow(jd2(1.0, 0.0, 0.0, x[0], z[0]), 2) + pow(jd3(1.0, 0.0, 0.0, x[0], y[0]), 2));
 
     logd[0] = 0.0;
-
-    // fp = fopen("lyapunov.dat", "w");
-    // fprintf(fp, "%lf %lf \n", t, logd[0]);
 
     for (int i = 1; i < x.size(); i++)
     {
@@ -178,10 +158,7 @@ double runge_kutta(){
 
         t = t + h;
 
-        // fprintf(fp, "%lf %lf \n", t, sum(logd)/t);
     }
-
-    // fclose(fp);
 
     return sum(logd) / T;
 
@@ -192,7 +169,7 @@ double runge_kutta(){
 
 int main(int argc, char const *argv[])
 {
-    double lambda = 0.0;
+    double lambda;
     
     lambda = runge_kutta();
     cout << lambda << endl;

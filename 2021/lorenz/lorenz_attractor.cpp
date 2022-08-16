@@ -22,30 +22,35 @@ double f3(double x, double y, double z){
 
 double runge_kutta(){
 
-    FILE *fp;
+    FILE *fp, *gp;
+    if ((gp = popen("gnuplot -persist", "w")) == NULL)
+    {
+        cout << "gnuplot open error" << endl;
+        exit(EXIT_FAILURE);
+    }
 
     double N = 200000;
     double T = 200.0;
     double h = T/N;
 
-    vector<double> k1(N + 1);
-    vector<double> k2(N + 1);
-    vector<double> k3(N + 1);
-    vector<double> k4(N + 1);
+    vector<double> k1(N);
+    vector<double> k2(N);
+    vector<double> k3(N);
+    vector<double> k4(N);
 
-    vector<double> l1(N + 1);
-    vector<double> l2(N + 1);
-    vector<double> l3(N + 1);
-    vector<double> l4(N + 1);
+    vector<double> l1(N);
+    vector<double> l2(N);
+    vector<double> l3(N);
+    vector<double> l4(N);
 
-    vector<double> m1(N + 1);
-    vector<double> m2(N + 1);
-    vector<double> m3(N + 1);
-    vector<double> m4(N + 1);
+    vector<double> m1(N);
+    vector<double> m2(N);
+    vector<double> m3(N);
+    vector<double> m4(N);
     
-    vector<double> x(N + 1);
-    vector<double> y(N + 1);
-    vector<double> z(N + 1);
+    vector<double> x(N);
+    vector<double> y(N);
+    vector<double> z(N);
 
     double t = 0.0;
     double x0 = 1.0;
@@ -53,29 +58,12 @@ double runge_kutta(){
     double z0 = 1.0;
 
     // 初期値
-    k1[0] = 0.0;
-    k2[0] = 0.0;
-    k3[0] = 0.0;
-    k4[0] = 0.0;
-
-    l1[0] = 0.0;
-    l2[0] = 0.0;
-    l3[0] = 0.0;
-    l4[0] = 0.0;
-
-    m1[0] = 0.0;
-    m2[0] = 0.0;
-    m3[0] = 0.0;
-    m4[0] = 0.0;
-
     x[0] = x0;
     y[0] = y0;
     z[0] = z0;
 
-    fp = fopen("data.dat", "w");
-
-    fprintf(fp, "%lf %lf %lf \n", x[0], y[0], z[0]);
-
+    fp = fopen("data.csv", "w");
+    fprintf(fp, "%lf, %lf, %lf \n", x[0], y[0], z[0]);
     for (int i = 1; i < x.size(); i++)
     {
         k1[i] = h * f1(x[i - 1], y[i - 1]);
@@ -100,10 +88,16 @@ double runge_kutta(){
 
         t = t + h;
 
-        fprintf(fp, "%lf %lf %lf \n", x[i], y[i], z[i]);
+        fprintf(fp, "%lf, %lf, %lf \n", x[i], y[i], z[i]);
     }
-    
     fclose(fp);
+
+    fprintf(gp, "reset \n");
+    fprintf(gp, "set datafile separator ',' \n");  // csv
+    fprintf(gp, "splot 'data.csv' w l \n");
+    fflush(gp);
+    fprintf(gp, "exit \n");
+    pclose(gp);
 
     return 0.0;
 
